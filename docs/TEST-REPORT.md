@@ -31,3 +31,16 @@ Test data: recipient "Maya", from "Sam", birthday Oct 5 (5 days from test date),
 |----|--------|-----|
 | D-1 | The headline said "5 days" while the ticker said "04 days" (calendar days vs. exact hours), which read as a contradiction | The ticker now counts to the **next surprise unlock**, with a caption ("Next surprise unlocks in" / "The big day begins in" / "Countdown starts in") |
 | D-2 | On the birthday, the 🎉 got the gradient-text style and showed as a flat pink silhouette | Added a `.big.emoji` style that turns off the gradient clip |
+
+## v1.1.0 regression: rename to "My Mercury on Earth"
+| Check | Result |
+|-------|--------|
+| Unit tests (`npm test`) | ✅ 11/11 |
+| Browser tab title is "My Mercury on Earth" | ✅ |
+| Header shows "My Mercury on Earth" with "For Maya" beneath | ✅ |
+| Export file name is `my-mercury-on-earth-for-maya.html` | ✅ |
+| 375px phone: no horizontal scroll, header doesn't wrap, Edit button intact | ✅ (after fix D-3) |
+
+| ID | Defect | Fix |
+|----|--------|-----|
+| D-3 | On phones the longer header label wrapped ("…FOR / MAYA") and squeezed the Edit button | Name moved to its own serif title line; Edit button set to `nowrap` |

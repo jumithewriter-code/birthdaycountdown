@@ -1,8 +1,8 @@
 {
-  "name": "birthday-countdown",
-  "version": "1.0.0",
+  "name": "my-mercury-on-earth",
+  "version": "1.1.0",
   "private": true,
-  "description": "A birthday countdown that unlocks a sweet message and photo each day.",
+  "description": "My Mercury on Earth: a birthday countdown that unlocks a sweet message and photo each day.",
   "scripts": {
     "test": "node --test tests/core.test.mjs"
   }

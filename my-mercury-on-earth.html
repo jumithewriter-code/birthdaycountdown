@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Birthday Countdown</title>
+<title>My Mercury on Earth</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -38,8 +38,9 @@ button{font:inherit;cursor:pointer}
 @keyframes float{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.45}100%{transform:translateY(-110vh) rotate(40deg);opacity:0}}
 
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.for{font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
-.iconbtn{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:700;box-shadow:var(--shadow)}
+.brand{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:20px;line-height:1.2}
+.for{margin-top:2px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.iconbtn{white-space:nowrap;flex-shrink:0;background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:700;box-shadow:var(--shadow)}
 .hero{text-align:center;margin:26px 0 22px}
 .big{font-size:clamp(72px,20vw,140px);line-height:.9;font-weight:800;margin:0;
   background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -214,7 +215,7 @@ const fmt = dt => dt.toLocaleDateString(undefined,{weekday:"short",month:"short"
 function render(){
   const app = $("#app");
   if (!cfg.birthday){
-    app.innerHTML = `<div class="empty"><h1 class="serif">🎂 Birthday Countdown</h1>
+    app.innerHTML = `<div class="empty"><h1 class="serif">🎂 My Mercury on Earth</h1>
       <p class="sub">Set a name and birthday to start the countdown.</p><br>
       <button class="btn" onclick="openEditor()">Set it up</button></div>`;
     return;
@@ -251,7 +252,7 @@ function render(){
   }
 
   app.innerHTML = `
-    <div class="top"><div class="for">${cfg.name?`For ${esc(cfg.name)}`:"Birthday countdown"}${previewDays!==null?" · preview":""}</div>
+    <div class="top"><div><div class="brand">My Mercury on Earth</div><div class="for">${cfg.name?`For ${esc(cfg.name)}`:""}${previewDays!==null?" · preview":""}</div></div>
       ${locked?"":`<button class="iconbtn" onclick="openEditor()">✏️ Edit</button>`}</div>
     <div class="hero">${hero}</div>
     ${card}
@@ -347,7 +348,7 @@ function exportGift(){
   doc.querySelector("#gift-data").textContent=Core.embedJSON(cfg);
   const blob=new Blob(["<!DOCTYPE html>\n"+doc.outerHTML],{type:"text/html"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
-  a.download=`birthday-countdown${cfg.name?"-for-"+cfg.name.replace(/[^\w-]+/g,"-").toLowerCase():""}.html`;
+  a.download=`my-mercury-on-earth${cfg.name?"-for-"+cfg.name.replace(/[^\w-]+/g,"-").toLowerCase():""}.html`;
   a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
   toast("Gift file downloaded! 🎁");
 }

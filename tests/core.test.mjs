@@ -1,11 +1,11 @@
-// Unit tests for the pure logic in birthday-countdown.html (<script id="core">).
+// Unit tests for the pure logic in my-mercury-on-earth.html (<script id="core">).
 // Run: node --test tests/
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
 
-const html = readFileSync(new URL("../birthday-countdown.html", import.meta.url), "utf8");
+const html = readFileSync(new URL("../my-mercury-on-earth.html", import.meta.url), "utf8");
 const src = html.match(/<script id="core">([\s\S]*?)<\/script>/)[1];
 const ctx = {}; vm.createContext(ctx); vm.runInContext(src, ctx);
 const Core = ctx.Core;

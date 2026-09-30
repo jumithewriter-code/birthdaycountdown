@@ -1,4 +1,4 @@
-# Requirements — Birthday Countdown
+# Requirements — My Mercury on Earth
 
 ## Goal
 A web app that counts down to someone's birthday and reveals a sweet message and a picture each day.

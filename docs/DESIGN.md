@@ -1,7 +1,7 @@
-# Design — Birthday Countdown
+# Design — My Mercury on Earth
 
 ## Architecture
-One file, `birthday-countdown.html`, with three script blocks:
+One file, `my-mercury-on-earth.html`, with three script blocks:
 
 1. `#gift-data` (`application/json`): `null` in the editable app. In an exported gift file it holds the whole config, including photos as data URLs.
 2. `#core`: pure, DOM-free logic (dates, unlock rule, message resolution). It is exposed as `window.Core` and unit-tested in Node by `tests/core.test.mjs`.
