@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Birthday Countdown</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fff7f3; --bg2:#ffe9e4; --card:#ffffff; --ink:#3b2230; --muted:#8a6b77;
+  --accent:#e2557a; --accent2:#f59e6b; --line:#f1d6d9; --locked:#f3e6e8; --shadow:0 18px 40px -18px rgba(150,40,80,.35);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1d1419; --bg2:#2a1a22; --card:#2b1d25; --ink:#fbeef2; --muted:#c7a6b4;
+    --accent:#ff7a9c; --accent2:#ffb37f; --line:#45303a; --locked:#33242c; --shadow:0 18px 40px -18px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1d1419; --bg2:#2a1a22; --card:#2b1d25; --ink:#fbeef2; --muted:#c7a6b4;
+  --accent:#ff7a9c; --accent2:#ffb37f; --line:#45303a; --locked:#33242c; --shadow:0 18px 40px -18px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:radial-gradient(1200px 600px at 50% -10%, var(--bg2), var(--bg) 70%) fixed, var(--bg);
+  color:var(--ink); font-family:Nunito, system-ui, sans-serif; min-height:100vh; overflow-x:hidden;
+}
+h1,h2,h3,.serif{font-family:Fraunces, Georgia, serif}
+button{font:inherit;cursor:pointer}
+.wrap{max-width:760px;margin:0 auto;padding:28px 16px 80px;position:relative;z-index:1}
+
+/* floating hearts */
+.hearts{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.hearts span{position:absolute;bottom:-40px;font-size:18px;opacity:.0;animation:float linear infinite}
+@keyframes float{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.45}100%{transform:translateY(-110vh) rotate(40deg);opacity:0}}
+
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.for{font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.iconbtn{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:700;box-shadow:var(--shadow)}
+.hero{text-align:center;margin:26px 0 22px}
+.big{font-size:clamp(72px,20vw,140px);line-height:.9;font-weight:800;margin:0;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.big.emoji{background:none;color:inherit;-webkit-background-clip:border-box;background-clip:border-box}
+.sub{font-size:clamp(18px,4.5vw,24px);margin:8px 0 0;font-family:Fraunces,serif}
+.tickcap{margin:18px 0 0;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.ticker{display:flex;justify-content:center;gap:10px;margin-top:8px}
+.ticker div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 12px;min-width:66px;box-shadow:var(--shadow)}
+.ticker b{display:block;font-size:22px;font-variant-numeric:tabular-nums;font-family:Fraunces,serif}
+.ticker small{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:26px;overflow:hidden;box-shadow:var(--shadow);animation:pop .5s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{from{transform:scale(.94) translateY(10px);opacity:0}to{transform:none;opacity:1}}
+.photo{aspect-ratio:4/3;width:100%;display:block;object-fit:cover;background:var(--bg2)}
+.ph{aspect-ratio:4/3;display:grid;place-items:center;font-size:clamp(80px,22vw,130px)}
+.cardbody{padding:22px 24px 26px}
+.daylabel{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);padding:5px 10px;border-radius:999px}
+.msg{font-family:Fraunces,serif;font-size:clamp(20px,4.6vw,26px);line-height:1.4;margin:14px 0 10px;white-space:pre-wrap}
+.sig{color:var(--muted);font-style:italic;margin:0}
+
+.stripTitle{margin:34px 0 12px;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;text-align:center}
+.strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:10px}
+.tile{aspect-ratio:1;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:700;transition:transform .15s}
+.tile:hover{transform:translateY(-3px)}
+.tile .n{font-family:Fraunces,serif;font-size:22px}
+.tile small{font-size:10px;color:var(--muted);font-weight:600}
+.tile.locked{background:var(--locked);color:var(--muted);cursor:not-allowed}
+.tile.today{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+.tile.today small{color:#fff}
+.tile.sel{outline:3px solid var(--accent);outline-offset:2px}
+.tile.bday .n{font-size:24px}
+.shake{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:14px;font-weight:600;transition:transform .3s;z-index:50;max-width:calc(100% - 32px);text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* editor */
+.drawer{position:fixed;inset:0;background:rgba(30,10,20,.45);z-index:40;display:none;justify-content:flex-end}
+.drawer.open{display:flex}
+.panel{background:var(--bg);width:min(560px,100%);height:100%;overflow-y:auto;padding:22px 16px 60px;box-shadow:-10px 0 40px rgba(0,0,0,.25)}
+.panel h2{margin:0 0 4px}
+.panel .hint{color:var(--muted);font-size:14px;margin:0 0 18px}
+.row{display:grid;gap:6px;margin-bottom:14px}
+.row label{font-weight:700;font-size:14px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+input[type=text],input[type=date],select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+textarea{resize:vertical;min-height:70px}
+.day{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:12px}
+.dayhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:700}
+.dayhead span{color:var(--muted);font-weight:600;font-size:13px}
+.photorow{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
+.thumb{width:56px;height:42px;border-radius:8px;object-fit:cover;border:1px solid var(--line)}
+.btn{border:0;border-radius:12px;padding:10px 16px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn.small{padding:6px 10px;font-size:13px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+.filebtn{position:relative;overflow:hidden}
+.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.sticky{position:sticky;top:-22px;background:var(--bg);padding:14px 0 8px;z-index:2;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);margin-bottom:14px}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:30}
+.empty{text-align:center;padding:60px 10px}
+@media (max-width:480px){.two{grid-template-columns:1fr}.ticker div{min-width:58px;padding:6px 8px}}
+</style>
+</head>
+<body>
+<div class="hearts" id="hearts"></div>
+<canvas id="confetti"></canvas>
+<div class="wrap" id="app"></div>
+<div class="drawer" id="drawer"><div class="panel" id="panel"></div></div>
+<div class="toast" id="toast"></div>
+
+<!-- When exported as a gift, all settings & photos are baked in here. -->
+<script type="application/json" id="gift-data">null</script>
+
+<!-- Pure logic, no DOM. Unit-tested by tests/core.test.mjs -->
+<script id="core">
+globalThis.Core = (() => {
+  const DAY = 86400000;
+  const midnight = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  /** Next occurrence of the birthday's month/day, on or after today (local midnight). */
+  function nextBirthday(birthday, now = new Date()){
+    const [, m, d] = birthday.split("-").map(Number), t = midnight(now);
+    let b = new Date(t.getFullYear(), m-1, d);
+    if (b < t) b = new Date(t.getFullYear()+1, m-1, d);
+    return b;
+  }
+  /** Whole days until the next birthday (0 = today). Rounded to absorb DST shifts. */
+  function daysLeft(birthday, now = new Date()){
+    return Math.round((nextBirthday(birthday, now) - midnight(now)) / DAY);
+  }
+  /** Calendar date on which "d days to go" happens. */
+  function dateFor(birthday, d, now = new Date()){
+    const b = nextBirthday(birthday, now);
+    return new Date(b.getFullYear(), b.getMonth(), b.getDate() - d);
+  }
+  /** Day d is open once it's within the countdown and today or earlier. */
+  const isUnlocked = (d, left, n) => d <= n && d >= left;
+  /** Creator's message or the built-in default, with {name} filled in. */
+  function messageFor(cfg, d, defaults){
+    const own = (cfg.entries?.[d]?.msg ?? "").trim();
+    const m = own || defaults[d] || `${d} days to go! Thinking of you, {name}. 💕`;
+    return m.replaceAll("{name}", cfg.name || "you");
+  }
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  /** JSON that is safe to embed inside a <script> tag. */
+  const embedJSON = obj => JSON.stringify(obj).replace(/</g, "\\u003c");
+  return { DAY, nextBirthday, daysLeft, dateFor, isUnlocked, messageFor, esc, embedJSON };
+})();
+</script>
+
+<script>
+const SWEET = [
+  "Happy birthday, {name}! 🎉 Today the whole world gets to celebrate you. I hope this year is as wonderful as you are.",
+  "Tomorrow is YOUR day. Tonight, go to sleep knowing you are so very loved. 💖",
+  "Two more sleeps! I've been waiting all year to spoil you.",
+  "Three days left — and three reasons I adore you: your laugh, your heart, and the way you make everything better.",
+  "Four days to go. You make ordinary days feel like a celebration.",
+  "Five days! If I could give you anything, it'd be the ability to see yourself the way I see you.",
+  "Six days left. Thank you for every little kindness you don't even notice you give.",
+  "One week to go! 🎈 Every day with you is a gift, but this one's extra special.",
+  "Eight days. Your smile is my favourite thing in the world — don't ever stop.",
+  "Nine days to go. You're braver, kinder, and more amazing than you give yourself credit for.",
+  "Ten days! Double digits still, but I'm already counting every one of them with you.",
+  "Eleven days left. Remember that time we laughed until we cried? More of that this year, please.",
+  "Twelve days. You're the warmest person I know. ☀️",
+  "Thirteen days — lucky for me, because I get you.",
+  "Two weeks to go! Let the countdown to the best day of the year begin. ✨",
+  "Fifteen days. Some people are sunshine; you're the whole summer.",
+  "Sixteen days left. I hope you know how much light you bring into every room.",
+  "Seventeen days. You deserve every good thing coming your way.",
+  "Eighteen days. Thank you for being exactly who you are.",
+  "Nineteen days to go. Here's to adventures we haven't had yet.",
+  "Twenty days! Just thinking about you makes me smile.",
+  "Twenty-one days — three weeks of reminding you that you're wonderful.",
+  "Twenty-two days. You make the world softer and brighter.",
+  "Twenty-three days. Your kindness is my favourite kind of magic.",
+  "Twenty-four days. I'm so lucky our paths crossed.",
+  "Twenty-five days to go. Keep dreaming big — I'm cheering for you.",
+  "Twenty-six days. You're someone's favourite person (mine!).",
+  "Twenty-seven days. Here's a hug in message form. 🤗",
+  "Twenty-eight days. The world is better with you in it.",
+  "Twenty-nine days. Almost a month of celebrating you — let's go!",
+  "Thirty days to go! A whole month of little love notes starts now. 💌"
+];
+const ART = ["🎂","🌙","🎁","🌷","🧁","🌈","💐","🎈","🍓","⭐","🌻","🦋","☀️","🍀","✨","🌸","🕯️","🍰","🎀","🌼","🍭","🥂","🌺","💫","🐝","🎶","🌟","🤗","💖","🍩","💌"];
+
+const $ = s => document.querySelector(s);
+const { esc, DAY } = Core;
+
+let cfg, locked = false, selected = null, previewDays = null, tickTimer = null;
+
+function defaults(){ return { name:"", from:"", birthday:"", days:14, entries:{} }; }
+function entry(d){ return cfg.entries[d] || {}; }
+const msgFor = d => Core.messageFor(cfg, d, SWEET);
+
+/* ---------- storage (IndexedDB, fails soft) ---------- */
+const DB = {
+  open(){ return new Promise((res,rej)=>{ try{ const r=indexedDB.open("bday-countdown",1); r.onupgradeneeded=()=>r.result.createObjectStore("kv"); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);}catch(e){rej(e)} }); },
+  async get(k){ try{ const db=await this.open(); return await new Promise(r=>{ const q=db.transaction("kv").objectStore("kv").get(k); q.onsuccess=()=>r(q.result); q.onerror=()=>r(null); }); }catch{ return null; } },
+  async set(k,v){ try{ const db=await this.open(); db.transaction("kv","readwrite").objectStore("kv").put(v,k); }catch{} }
+};
+let saveT; function save(){ clearTimeout(saveT); saveT=setTimeout(()=>DB.set("cfg",cfg),250); }
+
+/* ---------- dates ---------- */
+const nextBirthday = () => Core.nextBirthday(cfg.birthday);
+const realDaysLeft = () => Core.daysLeft(cfg.birthday);
+const daysLeft = () => previewDays ?? realDaysLeft();
+const dateFor = d => Core.dateFor(cfg.birthday, d);
+const fmt = dt => dt.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"});
+
+/* ---------- main view ---------- */
+function render(){
+  const app = $("#app");
+  if (!cfg.birthday){
+    app.innerHTML = `<div class="empty"><h1 class="serif">🎂 Birthday Countdown</h1>
+      <p class="sub">Set a name and birthday to start the countdown.</p><br>
+      <button class="btn" onclick="openEditor()">Set it up</button></div>`;
+    return;
+  }
+  const left = daysLeft(), N = +cfg.days, started = left <= N;
+  if (selected === null || selected < left || selected > N) selected = started ? left : null;
+  const isBday = left === 0;
+
+  let hero;
+  if (isBday) hero = `<h1 class="big emoji">🎉</h1><p class="sub">Happy Birthday${cfg.name?`, ${esc(cfg.name)}`:""}!</p>`;
+  else hero = `<h1 class="big">${left}</h1><p class="sub">${left===1?"day":"days"} until ${cfg.name?esc(cfg.name)+"'s":"your"} birthday</p>
+    ${previewDays===null?`<p class="tickcap">${left===1?"The big day begins in":started?"Next surprise unlocks in":"Countdown starts in"}</p><div class="ticker" id="ticker"></div>`:""}`;
+
+  let card;
+  if (selected === null){
+    card = `<div class="card"><div class="ph" style="background:linear-gradient(135deg,#ffd6e0,#ffe7c7)">🔒</div>
+      <div class="cardbody"><span class="daylabel">Coming soon</span>
+      <p class="msg">The sweet surprises begin on ${fmt(dateFor(N))}. One little message every day until the big one. 💌</p></div></div>`;
+  } else {
+    const e = entry(selected), hue = (selected*37)%360;
+    const pic = e.photo ? `<img class="photo" src="${e.photo}" alt="">`
+      : `<div class="ph" style="background:linear-gradient(135deg,hsl(${hue} 90% 88%),hsl(${(hue+50)%360} 90% 85%))">${ART[selected%ART.length]}</div>`;
+    const label = selected===0 ? "It's your birthday!" : selected===left ? `Today · ${selected} ${selected===1?"day":"days"} to go` : `${fmt(dateFor(selected))} · ${selected} days to go`;
+    card = `<div class="card" key="${selected}">${pic}<div class="cardbody"><span class="daylabel">${label}</span>
+      <p class="msg">${esc(msgFor(selected))}</p>${cfg.from?`<p class="sig">— with love, ${esc(cfg.from)}</p>`:""}</div></div>`;
+  }
+
+  let tiles = "";
+  for (let d=N; d>=0; d--){
+    const open = Core.isUnlocked(d, left, N);
+    const cls = ["tile", !open&&"locked", d===left&&started&&"today", d===selected&&"sel", d===0&&"bday"].filter(Boolean).join(" ");
+    tiles += `<button class="${cls}" data-d="${d}" aria-label="${d} days to go${open?"":" (locked)"}">
+      <span class="n">${d===0?"🎂":open?d:"🔒"}</span><small>${d===0?"B-day":open?(d===left?"today":"open"):d}</small></button>`;
+  }
+
+  app.innerHTML = `
+    <div class="top"><div class="for">${cfg.name?`For ${esc(cfg.name)}`:"Birthday countdown"}${previewDays!==null?" · preview":""}</div>
+      ${locked?"":`<button class="iconbtn" onclick="openEditor()">✏️ Edit</button>`}</div>
+    <div class="hero">${hero}</div>
+    ${card}
+    <div class="stripTitle">Your countdown</div>
+    <div class="strip">${tiles}</div>`;
+
+  app.querySelectorAll(".tile").forEach(t => t.onclick = () => {
+    const d = +t.dataset.d;
+    if (t.classList.contains("locked")){
+      t.classList.remove("shake"); void t.offsetWidth; t.classList.add("shake");
+      toast(`No peeking! 🙈 This one opens on ${fmt(dateFor(d))}.`); return;
+    }
+    selected = d; render(); window.scrollTo({top:$(".card").offsetTop-20,behavior:"smooth"});
+  });
+
+  clearInterval(tickTimer);
+  if (!isBday && previewDays===null){ tick(); tickTimer=setInterval(tick,1000); }
+  isBday ? confetti.start() : confetti.stop();
+}
+function tick(){
+  const el = $("#ticker"); if(!el) return;
+  // Counts to the next unlock: tomorrow's midnight, or the countdown's first day if it hasn't started.
+  const left = realDaysLeft(), N = +cfg.days;
+  const target = left > N ? dateFor(N) : dateFor(left - 1);
+  const ms = Math.max(0, target - new Date());
+  if (ms === 0) { selected = null; render(); return; }
+  const d=Math.floor(ms/DAY), h=Math.floor(ms/3.6e6)%24, m=Math.floor(ms/6e4)%60, s=Math.floor(ms/1e3)%60;
+  el.innerHTML = [...(d?[[d,"days"]]:[]),[h,"hrs"],[m,"min"],[s,"sec"]].map(([v,l])=>`<div><b>${String(v).padStart(2,"0")}</b><small>${l}</small></div>`).join("");
+}
+let toastT; function toast(t){ const el=$("#toast"); el.textContent=t; el.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove("show"),2600); }
+
+/* ---------- editor ---------- */
+function openEditor(){ renderEditor(); $("#drawer").classList.add("open"); }
+function closeEditor(){ $("#drawer").classList.remove("open"); previewDays=null; selected=null; render(); }
+$("#drawer").addEventListener("click", e => { if (e.target.id==="drawer") closeEditor(); });
+
+function renderEditor(){
+  const N=+cfg.days; let days="";
+  for (let d=N; d>=0; d--){
+    const e=entry(d);
+    days += `<div class="day"><div class="dayhead">${d===0?"🎂 Birthday":`${d} ${d===1?"day":"days"} to go`}
+        <span>${cfg.birthday?fmt(dateFor(d)):""}</span></div>
+      <textarea data-msg="${d}" placeholder="${esc(SWEET[d]||"Write something sweet…")}">${esc(e.msg||"")}</textarea>
+      <div class="photorow">${e.photo?`<img class="thumb" src="${e.photo}" alt="">`:""}
+        <label class="btn ghost small filebtn">📷 ${e.photo?"Change":"Add"} photo<input type="file" accept="image/*" data-photo="${d}"></label>
+        ${e.photo?`<button class="btn ghost small" data-rm="${d}">Remove</button>`:""}
+        <button class="btn ghost small" data-prev="${d}">👀 Preview</button></div></div>`;
+  }
+  $("#panel").innerHTML = `
+    <div class="sticky"><h2>Set up the countdown</h2><button class="btn small" onclick="closeEditor()">Done</button></div>
+    <p class="hint">Everything saves automatically in this browser. Leave a message blank to use the sweet default shown in grey. Use <b>{name}</b> to insert their name.</p>
+    <div class="two"><div class="row"><label>Birthday person</label><input type="text" id="f-name" value="${esc(cfg.name)}" placeholder="e.g. Maya"></div>
+      <div class="row"><label>From</label><input type="text" id="f-from" value="${esc(cfg.from)}" placeholder="e.g. Sam"></div></div>
+    <div class="two"><div class="row"><label>Birthday</label><input type="date" id="f-date" value="${esc(cfg.birthday)}"></div>
+      <div class="row"><label>Countdown length</label><select id="f-days">${[7,10,14,21,30].map(n=>`<option ${n==N?"selected":""} value="${n}">${n} days</option>`).join("")}</select></div></div>
+    <div class="actions">
+      <button class="btn" onclick="exportGift()">🎁 Download gift file</button>
+      <button class="btn ghost" onclick="if(confirm('Clear all messages and photos?')){cfg.entries={};save();renderEditor();render();}">Clear messages</button>
+    </div>
+    <p class="hint">The gift file is a single page with your messages and photos built in, and no edit button. Send it to them — each day unlocks automatically on its date.</p>
+    <h3>Daily messages & photos</h3>${days}`;
+
+  const bind=(id,key,rerender)=>$(id).addEventListener("input",e=>{ cfg[key]=e.target.value; save(); render(); if(rerender) renderEditor(); });
+  bind("#f-name","name"); bind("#f-from","from"); bind("#f-date","birthday",true); bind("#f-days","days",true);
+  $("#panel").querySelectorAll("[data-msg]").forEach(t=>t.addEventListener("input",()=>{ const d=t.dataset.msg; cfg.entries[d]={...entry(d),msg:t.value}; save(); render(); }));
+  $("#panel").querySelectorAll("[data-photo]").forEach(inp=>inp.addEventListener("change",async()=>{
+    const f=inp.files[0]; if(!f) return; const d=inp.dataset.photo;
+    try{ cfg.entries[d]={...entry(d),photo:await shrink(f)}; save(); renderEditor(); render(); }catch{ toast("Couldn't read that image."); }
+  }));
+  $("#panel").querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{ const d=b.dataset.rm; const e={...entry(d)}; delete e.photo; cfg.entries[d]=e; save(); renderEditor(); render(); });
+  $("#panel").querySelectorAll("[data-prev]").forEach(b=>b.onclick=()=>{
+    if(!cfg.birthday){ toast("Pick a birthday first."); return; }
+    previewDays=+b.dataset.prev; selected=previewDays; $("#drawer").classList.remove("open"); render();
+    toast("Previewing how that day looks. Tap ✏️ Edit to go back.");
+  });
+}
+
+function shrink(file, max=1100){
+  return new Promise((res,rej)=>{
+    const img=new Image(), url=URL.createObjectURL(file);
+    img.onload=()=>{ const k=Math.min(1,max/Math.max(img.width,img.height)); const c=document.createElement("canvas");
+      c.width=Math.round(img.width*k); c.height=Math.round(img.height*k); c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+      URL.revokeObjectURL(url); res(c.toDataURL("image/jpeg",.82)); };
+    img.onerror=rej; img.src=url;
+  });
+}
+
+function exportGift(){
+  if(!cfg.birthday){ toast("Pick a birthday first."); return; }
+  const doc=document.documentElement.cloneNode(true);
+  doc.querySelector("#app").innerHTML=""; doc.querySelector("#panel").innerHTML=""; doc.querySelector("#hearts").innerHTML="";
+  doc.querySelector("#drawer").className="drawer"; doc.querySelector("#toast").className="toast";
+  doc.querySelector("#gift-data").textContent=Core.embedJSON(cfg);
+  const blob=new Blob(["<!DOCTYPE html>\n"+doc.outerHTML],{type:"text/html"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download=`birthday-countdown${cfg.name?"-for-"+cfg.name.replace(/[^\w-]+/g,"-").toLowerCase():""}.html`;
+  a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  toast("Gift file downloaded! 🎁");
+}
+
+/* ---------- hearts & confetti ---------- */
+(function hearts(){ const h=$("#hearts"), g=["💗","💕","🎈","✨","💖","🌸"];
+  for(let i=0;i<14;i++){ const s=document.createElement("span"); s.textContent=g[i%g.length];
+    s.style.left=Math.random()*100+"%"; s.style.fontSize=(12+Math.random()*16)+"px";
+    s.style.animationDuration=(12+Math.random()*14)+"s"; s.style.animationDelay=(-Math.random()*20)+"s"; h.appendChild(s);} })();
+
+const confetti=(()=>{ const c=$("#confetti"), x=c.getContext("2d"); let parts=[], raf=null;
+  const cols=["#e2557a","#f59e6b","#ffd166","#7bdcb5","#8ecae6","#c77dff"];
+  const size=()=>{c.width=innerWidth; c.height=innerHeight}; addEventListener("resize",size); size();
+  const spawn=()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height,r:4+Math.random()*5,c:cols[Math.random()*cols.length|0],vy:1.5+Math.random()*2.5,vx:-1+Math.random()*2,a:Math.random()*6,va:-.1+Math.random()*.2});
+  function loop(){ x.clearRect(0,0,c.width,c.height);
+    for(const p of parts){ p.y+=p.vy; p.x+=p.vx; p.a+=p.va; if(p.y>c.height+20){Object.assign(p,spawn(),{y:-20});}
+      x.save(); x.translate(p.x,p.y); x.rotate(p.a); x.fillStyle=p.c; x.fillRect(-p.r,-p.r/2,p.r*2,p.r); x.restore(); }
+    raf=requestAnimationFrame(loop); }
+  return { start(){ if(raf) return; if(matchMedia("(prefers-reduced-motion: reduce)").matches) return; parts=Array.from({length:140},spawn); loop(); },
+           stop(){ cancelAnimationFrame(raf); raf=null; x.clearRect(0,0,c.width,c.height); } };
+})();
+
+/* ---------- boot ---------- */
+(async function(){
+  let gift=null; try{ gift=JSON.parse($("#gift-data").textContent); }catch{}
+  if (gift){ cfg={...defaults(),...gift}; locked=true; }
+  else { cfg={...defaults(),...(await DB.get("cfg")||{})}; }
+  render();
+  if (!locked && !cfg.birthday) openEditor();
+  // re-render at midnight so a new day unlocks without a refresh
+  setInterval(()=>{ if(previewDays===null && cfg.birthday && selected!==null && realDaysLeft()<selected){ selected=null; render(); } },60000);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "birthday-countdown",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A birthday countdown that unlocks a sweet message and photo each day.",
+  "scripts": {
+    "test": "node --test tests/core.test.mjs"
+  }
+}
