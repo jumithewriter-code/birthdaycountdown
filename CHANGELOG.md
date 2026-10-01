@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.1 — 2026-10-01
+- Fixed the deployed site showing "404 NOT_FOUND" at its root address: added `vercel.json` so `/` serves `my-mercury-on-earth.html`.
+
 ## 1.1.0 — 2026-09-30
 - Renamed the app to **My Mercury on Earth**: browser tab title, page header, setup screen, gift file name (`my-mercury-on-earth-for-<name>.html`), main file and docs.
 - Header now shows the name as a title with "For <name>" underneath, so it no longer wraps on phones.
